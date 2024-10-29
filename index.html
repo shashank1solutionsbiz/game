@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guessing Game 🎲</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f8ff;
+        }
+        .game-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .result {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .gift-box {
+            font-size: 4rem;
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            100% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            display: none;
+        }
+        .confetti div {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffcc00;
+            animation: confetti-fall 3s ease-in-out infinite;
+            opacity: 0.8;
+        }
+        @keyframes confetti-fall {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container game-container text-center">
+        <h2>Guess the Number 🎲</h2>
+        <p>Enter a number between 0 and 9. If you guess correctly, you win a 🎁!</p>
+        <div class="input-group mb-3">
+            <input type="number" id="userGuess" class="form-control" placeholder="Enter a number (0-9)" min="0" max="9">
+            <button class="btn btn-primary" onclick="checkGuess()">Guess</button>
+        </div>
+        <p class="result" id="resultMessage"></p>
+        <button class="btn btn-secondary mt-3" onclick="resetGame()">Try Again 🔄</button>
+        <div class="gift-box" id="giftBox">🎁</div>
+        <div class="confetti" id="confettiContainer"></div>
+    </div>
+
+    <!-- Bootstrap JS (optional for better interaction) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let randomNumber = Math.floor(Math.random() * 10);
+
+        function checkGuess() {
+            const userGuess = parseInt(document.getElementById("userGuess").value);
+            const resultMessage = document.getElementById("resultMessage");
+
+            if (isNaN(userGuess) || userGuess < 0 || userGuess > 9) {
+                resultMessage.textContent = "⚠️ Please enter a valid number between 0 and 9!";
+                resultMessage.classList.add("text-warning");
+                return;
+            }
+
+            if (userGuess === randomNumber) {
+                resultMessage.textContent = "🎉 Congratulations! You guessed the right number!";
+                resultMessage.classList.remove("text-danger", "text-warning");
+                resultMessage.classList.add("text-success");
+
+                // Show gift box and confetti
+                document.getElementById("giftBox").style.display = "block";
+                showConfetti();
+            } else {
+                resultMessage.textContent = "❌ Oops! Wrong guess. Try again!";
+                resultMessage.classList.remove("text-success", "text-warning");
+                resultMessage.classList.add("text-danger");
+            }
+        }
+
+        function resetGame() {
+            randomNumber = Math.floor(Math.random() * 10);
+            document.getElementById("userGuess").value = "";
+            document.getElementById("resultMessage").textContent = "";
+            document.getElementById("giftBox").style.display = "none";
+            hideConfetti();
+        }
+
+        function showConfetti() {
+            const confettiContainer = document.getElementById("confettiContainer");
+            confettiContainer.style.display = "block";
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement("div");
+                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.animationDelay = Math.random() * 3 + "s";
+                confetti.style.backgroundColor = getRandomColor();
+                confettiContainer.appendChild(confetti);
+            }
+        }
+
+        function hideConfetti() {
+            const confettiContainer = document.getElementById("confettiContainer");
+            confettiContainer.style.display = "none";
+            confettiContainer.innerHTML = ""; // Clear confetti elements
+        }
+
+        function getRandomColor() {
+            const colors = ["#ffcc00", "#ff5733", "#33cc33", "#0099ff", "#ff33ff"];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+</body>
+</html>
